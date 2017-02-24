@@ -6,7 +6,7 @@ const chalk = require('chalk');
 const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 const weather = require('./');
-
+/* Usage of meow to get parameters from command line */
 const cli = meow({
 	help: [
 		'Usage',
@@ -25,12 +25,14 @@ const cli = meow({
 	]
 });
 
+/* Function to convert Farenheit to Celcsius */
 function _toCelcius(temp) {
 	return Math.round(((temp - 32) * 5) / 9);
 }
 
 updateNotifier({ pkg}).notify();
 
+/* Main function with result display */
 weather(cli.input, (err, result) => {
 	if (err) {
 		console.log(chalk.bold.red(err));
@@ -40,6 +42,7 @@ weather(cli.input, (err, result) => {
 	let condition = result.query.results.channel.item.condition.text;
 	let temperature;
 
+	// Farenheit or Celcius treatment
 	if (cli.input[2] && cli.input[2] === 'C') {
 		temperature = _toCelcius(result.query.results.channel.item.condition.temp) + 'C';
 	} else if (cli.input[2] && cli.input[2] === 'F') {
@@ -48,9 +51,11 @@ weather(cli.input, (err, result) => {
 		temperature = _toCelcius(result.query.results.channel.item.condition.temp) + 'C';
 	}
 
+	// Put default parameters or input parameters
 	let city = cli.input[0] ? cli.input[0] : 'Dhaka';
 	let country = cli.input[1] ? cli.input[1] : 'Bangladesh';
 
+	// Display results
 	console.log(chalk.red(city + ', ' + country));
 	console.log(chalk.cyan('Condition: ' + chalk.yellow(condition)));
 	console.log(chalk.cyan('Temperature: ' + chalk.yellow(temperature)));
